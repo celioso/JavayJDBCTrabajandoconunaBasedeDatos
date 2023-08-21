@@ -109,5 +109,22 @@ Para asegurar la compatibilidad de su proyecto inicial, disponibilizamos para do
 
 [Descargue los archivos en Github](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/tree/aula-1 "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/archive/refs/tags/aula-1.zip "aquí") para descargarlos directamente.
 
+## Lo que aprendimos
+
+Lo que aprendimos en esta aula:
+
+- Para acceder a una base de datos necesitamos del driver de conexión;
+ + Un driver es simplemente una librería .jar.
+- **JDBC **significa Java DataBase Connectivity;
+ + El JDBC define una capa de abstracción entre la aplicación y el driver de la base de datos.
+ + Esta capa es compuesta de interfaces que el driver implementa.
+- Para abrir una conexión con la base de datos debemos utilizar el método `getConnection` de la clase `DriverManager`;
+ + El método `getConnection` recibe tres parámetros. Son ellos la URL de conexión JDBC, el usuario y la contraseña.
+
+  ## Proyecto del aula anterior
+ 
+ ¿Comenzando en esta etapa? Aquí puedes descargar los archivos del proyecto que hemos avanzado hasta el aula anterior.
+
+[Descargue los archivos en Github](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/tree/aula-1 "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/archive/refs/tags/aula-1.zip "aquí") para descargarlos directamente.
 
 
