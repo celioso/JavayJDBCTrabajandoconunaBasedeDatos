@@ -128,3 +128,96 @@ Lo que aprendimos en esta aula:
 [Descargue los archivos en Github](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/tree/aula-1 "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/archive/refs/tags/aula-1.zip "aquí") para descargarlos directamente.
 
 
+## Modificando un registro con Statement
+
+En el vídeo anterior agregamos un registro con un error de escritura. En lugar de escribir "cuchara" fue escrito "cucaracha". Para modificar el valor de este registro es posible hacer doble click en la columna que queremos actualizar, escribir el nuevo valor y hacer click en el botón `Modificar`.
+
+Ahora es tu turno de poner en práctica lo que aprendimos en las clases anteriores para completar la funcionalidad de modificar un registro del depósito.
+
+Lo primero que tenemos que hacer aquí es arreglar el problema de `java.lang.ClassCastException` que vimos en la clase anterior cambiando el código con problemas por:
+
+```java
+Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
+```
+También tenemos que agregar el campo de `cantidad`, que no está presente en la lógica pero es importante que también pueda ser modificado.
+
+```java
+Integer cantidad = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 3).toString());
+```
+
+Luego, tenemos que ver cómo está configurado el evento del `botonModificar` en el método `configurarAccionesDelFormulario()`. Vemos dos métodos conocidos: `limpiarTabla()` y `cargarTabla()`. Vamos a ver el detalle del método `modificar()`.
+
+Aquí estamos recibiendo los valores de la fila elegida y enviando como parámetro en el método `productoController.modificar(nombre, descripcion, id)`. Este es el método que debemos completar.
+
+La lógica para hacer un `UPDATE` es muy similar a la lógica del `DELETE`, empezamos tomando la conexión de la `ConnectionFactory` y creando un `Statement statement = con.createStatement()`.
+
+Luego ejecutamos el método `execute` con el código SQL de `UPDATE`, cerramos la conexión y retornamos la cantidad de líneas modificadas. No olvidemos de las comillas simples para modificar valores del tipo `String`.
+
+```java
+statement.execute("UPDATE PRODUCTO SET "
+    + " NOMBRE = '" + nombre + "'"
+    + ", DESCRIPCION = '" + descripcion + "'"
+    + ", CANTIDAD = " + cantidad
+    + "WHERE ID = " + id);
+```
+
+No podemos dejar pasar el detalle de la `SQLException` y, por fin, vamos a mostrar un cartel informando cuántos registros fueron modificados con éxito. Parecido con el cartel de eliminar registros.
+
+Así quedan los códigos de resultado:
+
+```java
+// Clase ProductoController
+public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) throws SQLException {
+    ConnectionFactory factory = new ConnectionFactory();
+    Connection con = factory.recuperaConexion();
+    Statement statement = con.createStatement();
+    statement.execute("UPDATE PRODUCTO SET "
+            + " NOMBRE = '" + nombre + "'"
+            + ", DESCRIPCION = '" + descripcion + "'"
+            + ", CANTIDAD = " + cantidad
+            + " WHERE ID = " + id);
+
+    int updateCount = statement.getUpdateCount();
+
+    con.close();   
+
+    return updateCount;
+}
+// Clase ControlDeStockFrame
+private void modificar() {
+    if (tieneFilaElegida()) {
+        JOptionPane.showMessageDialog(this, "Por favor, elije un item");
+        return;
+    }
+
+    Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
+            .ifPresentOrElse(fila -> {
+                Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
+                String nombre = (String) modelo.getValueAt(tabla.getSelectedRow(), 1);
+                String descripcion = (String) modelo.getValueAt(tabla.getSelectedRow(), 2);
+                Integer cantidad = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 3).toString());
+
+                int filasModificadas;
+
+                try {
+                    filasModificadas = this.productoController.modificar(nombre, descripcion, cantidad, id);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+
+                JOptionPane.showMessageDialog(this, String.format("%d item modificado con éxito!", filasModificadas));
+            }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+}
+```
+
+## Lo que aprendimos
+
+Lo que aprendimos en esta aula:
+
+- Para simplificar y encapsular la creación de la conexión debemos utilizar una clase `ConnectionFactory`;
+ + Esta clase sigue el estándar de creación Factory Method, que encapsula la creación de un objeto.
+- Podemos utilizar la interfaz `java.sql.Statement` para ejecutar un comando SQL en la aplicación;
+
+ + El método execute envía el comando para la base de datos.
+ + A depender del comando SQL, podemos recuperar la clave primaria o los registros buscados.
