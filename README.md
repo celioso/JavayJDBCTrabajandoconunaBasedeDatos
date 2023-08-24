@@ -336,3 +336,133 @@ Lo que aprendimos en esta aula:
 ¿Comenzando en esta etapa? Aquí puedes descargar los archivos del proyecto que hemos avanzado hasta el aula anterior.
 
 [Descargue los archivos en Github](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/tree/aula-4 "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/archive/refs/tags/aula-4.zip "aquí") para descargarlos directamente.
+
+### Desafío: Operaciones de modificación y exclusión en el ProductoDAO
+
+Utilizando todo lo que aprendimos en la refactorización de la lógica de acceso a la capa de datos del `ProductoController` para la clase `ProductoDAO` es el momento de poner en práctica lo que aprendimos para refactorizar las operaciones de modificación y exclusión de productos siguiendo las buenas prácticas que aprendimos.
+
+Empecemos por el método de `eliminar` de la clase ProductoController. Lo que vamos hacer primero es crear una llamada a `productoDao.eliminar(id);`. Este método aún no existe, entonces vamos a crearlo en el `ProductoDAO` y mover la lógica de exclusión del producto para allá. Vamos a dejarla más sencilla también, removiendo pedazos de código que ya no son más necesarios, como la de tomar una conexión.
+
+Recordemos que no debemos más estar lanzando la `SQLException` para las demás capas. Los errores que una clase puede lanzar deben ser tratados en ella de forma que podamos lanzar, como máximo, una excepción del tipo unchecked.
+
+Por último vamos a ajustar el código referente a la exclusión de un producto en la clase `ControlDeStockFrame` y listo. Podemos hacer lo mismo con el método de modificación.
+
+Así va a quedar el resultado:
+
+```java
+// ControlDeStockFrame
+private void modificar() {
+    if (tieneFilaElegida()) {
+        JOptionPane.showMessageDialog(this, "Por favor, elije un item");
+        return;
+    }
+
+    Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
+            .ifPresentOrElse(fila -> {
+                Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
+                String nombre = (String) modelo.getValueAt(tabla.getSelectedRow(), 1);
+                String descripcion = (String) modelo.getValueAt(tabla.getSelectedRow(), 2);
+                Integer cantidad = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 3).toString());
+                var filasModificadas = this.productoController.modificar(nombre, descripcion, cantidad, id);
+
+                JOptionPane.showMessageDialog(this, String.format("%d item modificado con éxito!", filasModificadas));
+            }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+}
+
+private void eliminar() {
+    if (tieneFilaElegida()) {
+        JOptionPane.showMessageDialog(this, "Por favor, elije un item");
+        return;
+    }
+
+    Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
+            .ifPresentOrElse(fila -> {
+                Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
+                var filasModificadas = this.productoController.eliminar(id);
+
+                modelo.removeRow(tabla.getSelectedRow());
+                JOptionPane.showMessageDialog(this,
+                        String.format("%d item eliminado con éxito!", filasModificadas));
+            }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+}
+
+// ProductoController
+public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) {
+    return productoDao.modificar(nombre, descripcion, cantidad, id);
+}
+
+public int eliminar(Integer id) {
+    return productoDao.eliminar(id);
+}
+
+// ProductoDAO
+public int eliminar(Integer id) {
+    try {
+        final PreparedStatement statement = con.prepareStatement("DELETE FROM PRODUCTO WHERE ID = ?");
+
+        try (statement) {
+            statement.setInt(1, id);
+            statement.execute();
+
+            int updateCount = statement.getUpdateCount();
+
+            return updateCount;
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
+}
+
+public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) {
+    try {
+        final PreparedStatement statement = con.prepareStatement(
+                "UPDATE PRODUCTO SET "
+                + " NOMBRE = ?, "
+                + " DESCRIPCION = ?,"
+                + " CANTIDAD = ?"
+                + " WHERE ID = ?");
+
+        try (statement) {
+            statement.setString(1, nombre);
+            statement.setString(2, descripcion);
+            statement.setInt(3, cantidad);
+            statement.setInt(4, id);
+            statement.execute();
+
+            int updateCount = statement.getUpdateCount();
+
+            return updateCount;
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
+}
+```
+
+### Lo que aprendimos
+
+Lo que aprendimos en esta aula:
+
+- Para cada tabla del modelo tenemos una clase de dominio;
+ + Para la tabla de `producto` tenemos una clase `Producto` asociada.
+ + Los objetos del tipo `Producto` representan un registro de la tabla.
+- Para acceder a la tabla vamos a utilizar el estándar llamado **Data Access Object (DAO);**
+ + Para cada clase de dominio hay un DAO asociado. Por ejemplo, la clase `Producto` posee la clase `ProductoDAO`.
+ + Todos los métodos JDBC relacionados al producto deben estar encapsulados en `ProductoDAO`.
+- Una aplicación es escrita en capas;
+ + Las capas más conocidas son las de view, controller, modelo y persistencia, que componen el estándar MVC.
+- El flujo de una requisición entre las capas es el siguiente;
+
+```java
+view <--> controller <--> persistencia
+```
+
+- En este curso utilizamos una aplicación con las views y los controllers ya creados y enfocamos en la capa de persistencia y modelo;
+- No es una buena práctica dejar los detalles de implementación de una capa en otras que no tienen esta responsabilidad (por ejemplo la capa de controller lanzar una `SQLException`);
+- Aquí estamos aprendiendo con una aplicación desktop embebida, pero hay otros tipos de aplicaciones con otros tipos de view, como **html** para aplicaciones web.
+
+### Proyecto del aula anterior
+
+¿Comenzando en esta etapa? Aquí puedes descargar los archivos del proyecto que hemos avanzado hasta el aula anterior.
+
+[Descargue los archivos en Github](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/tree/aula-5 "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/archive/refs/tags/aula-5.zip "aquí") para descargarlos directamente.
