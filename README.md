@@ -819,3 +819,18 @@ mysql> SELECT * FROM PRODUCTO;
 +----+-----------+---------------------------------------------+----------+--------------+
 11 rows in set (0.00 sec)
 ```
+
+### Proyecto final
+
+Aquí puedes descargar los archivos del proyecto completo.
+
+[Descargue los archivos en Github](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/tree/aula-6 "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/archive/refs/tags/aula-6.zip "aquí") para descargarlos directamente.
+
+### Lo que aprendimos
+
+Lo que aprendimos en esta aula:
+
+- Cuando tenemos una relación entre tables debemos tener cuidado para no crear el problema de queries N + 1;
+ + N + 1 quiere decir que, para buscar los datos de una relación, es ejecutada una query y luego una más por cada relación.
+ + Este tipo de problema puede generar problemas de performance en la aplicación y en la base de datos.
+ + Este tipo de problema puede ser evitado utilizando join en la query SQL.
