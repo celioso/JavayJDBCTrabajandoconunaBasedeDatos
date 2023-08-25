@@ -466,3 +466,356 @@ view <--> controller <--> persistencia
 ¿Comenzando en esta etapa? Aquí puedes descargar los archivos del proyecto que hemos avanzado hasta el aula anterior.
 
 [Descargue los archivos en Github](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/tree/aula-5 "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1846-Java-y-JDBC-Trabajando-con-una-Base-de-Datos/archive/refs/tags/aula-5.zip "aquí") para descargarlos directamente.
+
+### MySQL
+Se crea categoría y se crea la llave foránea
+```java
+mysql> SELECT * FROM producto;
+ERROR 1046 (3D000): No database selected
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| control_de_stock   |
+| information_schema |
+| jugos              |
+| mysql              |
+| performance_schema |
+| platziblog         |
+| sys                |
+| world              |
++--------------------+
+8 rows in set (0.00 sec)
+
+mysql> USE control_de_stock;
+Database changed
+mysql> SELECT * FROM producto;
++----+-----------+---------------------------------------------+----------+
+| id | nombre    | descripcion                                 | cantidad |
++----+-----------+---------------------------------------------+----------+
+|  1 | Mesa      | Mesa de 4 lugares                           |       10 |
+|  2 | Celular   | Celular Samsung                             |       50 |
+|  3 | Vaso      | Vaso de cristal                             |       10 |
+|  8 | Mause'    | Mouse inalambrico'20);DELETE FROM PRODUCTO; |       20 |
+|  9 | Linternas | Linterna con pilas recargables              |       50 |
+| 10 | Linternas | Linterna con pilas recargables              |       50 |
+| 13 | zapatilla | Zapatillas de Futbol                        |       40 |
+| 14 | Botellas  | Botellas de vidrio                          |       50 |
+| 15 | Botellas  | Botellas de vidrio                          |       25 |
+| 16 | platos    | platos de plastico                          |       50 |
+| 28 | Teclado   | Teclado inalambrico                         |       10 |
++----+-----------+---------------------------------------------+----------+
+11 rows in set (0.00 sec)
+
+mysql> CREATED  TABLE categoria(
+    -> id INT AUTO_INCREMENT,
+    -> nombre VARCHAR(50)NOT NULL,
+    -> PRIMARY KEY(id)
+    -> )Engine=InnoDB;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'CREATED  TABLE categoria(
+id INT AUTO_INCREMENT,
+nombre VARCHAR(50)NOT NULL,
+PRI' at line 1
+mysql> CREATE TABLE CATEGORIA(
+    -> id INT AUTO_INCREMENT,
+    -> nombre VARCHAR(50) NOT NULL,
+    -> PRIMARY KEY(id)
+    -> )Engine=InnoDB;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> elect * from categoria
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'elect * from categoria' at line 1
+mysql> select * from categoria;
+Empty set (0.00 sec)
+
+mysql> SELECT * FROM producto;
++----+-----------+---------------------------------------------+----------+
+| id | nombre    | descripcion                                 | cantidad |
++----+-----------+---------------------------------------------+----------+
+|  1 | Mesa      | Mesa de 4 lugares                           |       10 |
+|  2 | Celular   | Celular Samsung                             |       50 |
+|  3 | Vaso      | Vaso de cristal                             |       10 |
+|  8 | Mause'    | Mouse inalambrico'20);DELETE FROM PRODUCTO; |       20 |
+|  9 | Linternas | Linterna con pilas recargables              |       50 |
+| 10 | Linternas | Linterna con pilas recargables              |       50 |
+| 13 | zapatilla | Zapatillas de Futbol                        |       40 |
+| 14 | Botellas  | Botellas de vidrio                          |       50 |
+| 15 | Botellas  | Botellas de vidrio                          |       25 |
+| 16 | platos    | platos de plastico                          |       50 |
+| 28 | Teclado   | Teclado inalambrico                         |       10 |
++----+-----------+---------------------------------------------+----------+
+11 rows in set (0.00 sec)
+
+mysql> INSERT INTO CATEGORIA
+    ->
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> INSERT INTO CATEGORIA('nombre') VALUES ('Muebles','Tecnologia', 'Cocina',
+    -> 'zapatillas');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''nombre') VALUES ('Muebles','Tecnologia', 'Cocina',
+'zapatillas')' at line 1
+mysql> INSERT INTO CATEGORIA('nombre') VALUES ('Muebles','Tecnologia', 'Cocina','Zapatillas');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''nombre') VALUES ('Muebles','Tecnologia', 'Cocina','Zapatillas')' at line 1
+mysql> INSERT INTO CATEGORIA('nombre') VALUES ('Muebles'),('Tecnologia'), ('Cocina'),('Zapatillas');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''nombre') VALUES ('Muebles'),('Tecnologia'), ('Cocina'),('Zapatillas')' at line 1
+mysql> INSERT INTO CATEGORIA(nombre) VALUES ('Muebles'),('Tecnologia'), ('Cocina'),('Zapatillas');
+Query OK, 4 rows affected (0.00 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM categoria;
++----+------------+
+| id | nombre     |
++----+------------+
+|  1 | Muebles    |
+|  2 | Tecnologia |
+|  3 | Cocina     |
+|  4 | Zapatillas |
++----+------------+
+4 rows in set (0.00 sec)
+
+mysql> ALTER TABLE PRODUCTO ADD COLUMN categoria_id INT
+    -> ;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM producto;
++----+-----------+---------------------------------------------+----------+--------------+
+| id | nombre    | descripcion                                 | cantidad | categoria_id |
++----+-----------+---------------------------------------------+----------+--------------+
+|  1 | Mesa      | Mesa de 4 lugares                           |       10 |         NULL |
+|  2 | Celular   | Celular Samsung                             |       50 |         NULL |
+|  3 | Vaso      | Vaso de cristal                             |       10 |         NULL |
+|  8 | Mause'    | Mouse inalambrico'20);DELETE FROM PRODUCTO; |       20 |         NULL |
+|  9 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 10 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 13 | zapatilla | Zapatillas de Futbol                        |       40 |         NULL |
+| 14 | Botellas  | Botellas de vidrio                          |       50 |         NULL |
+| 15 | Botellas  | Botellas de vidrio                          |       25 |         NULL |
+| 16 | platos    | platos de plastico                          |       50 |         NULL |
+| 28 | Teclado   | Teclado inalambrico                         |       10 |         NULL |
++----+-----------+---------------------------------------------+----------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> ALTED TABLE PRODUCTO ADD FOREIGN KEY (CATEGORIA_ID) REFERENCES CATEGORIA(ID);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTED TABLE PRODUCTO ADD FOREIGN KEY (CATEGORIA_ID) REFERENCES CATEGORIA(ID)' at line 1
+mysql> ALTER TABLE PRODUCTO ADD FOREIGN KEY (CATEGORIA_ID) REFERENCES CATEGORIA(ID);
+Query OK, 11 rows affected (0.03 sec)
+Records: 11  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM PRODUCTO;
++----+-----------+---------------------------------------------+----------+--------------+
+| id | nombre    | descripcion                                 | cantidad | categoria_id |
++----+-----------+---------------------------------------------+----------+--------------+
+|  1 | Mesa      | Mesa de 4 lugares                           |       10 |         NULL |
+|  2 | Celular   | Celular Samsung                             |       50 |         NULL |
+|  3 | Vaso      | Vaso de cristal                             |       10 |         NULL |
+|  8 | Mause'    | Mouse inalambrico'20);DELETE FROM PRODUCTO; |       20 |         NULL |
+|  9 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 10 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 13 | zapatilla | Zapatillas de Futbol                        |       40 |         NULL |
+| 14 | Botellas  | Botellas de vidrio                          |       50 |         NULL |
+| 15 | Botellas  | Botellas de vidrio                          |       25 |         NULL |
+| 16 | platos    | platos de plastico                          |       50 |         NULL |
+| 28 | Teclado   | Teclado inalambrico                         |       10 |         NULL |
++----+-----------+---------------------------------------------+----------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> SELECT * FROM CATEGORIA
+    -> ;
++----+------------+
+| id | nombre     |
++----+------------+
+|  1 | Muebles    |
+|  2 | Tecnologia |
+|  3 | Cocina     |
+|  4 | Zapatillas |
++----+------------+
+4 rows in set (0.00 sec)
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID=1
+    -> WHERE ID = 1;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM PRODUCTO;
++----+-----------+---------------------------------------------+----------+--------------+
+| id | nombre    | descripcion                                 | cantidad | categoria_id |
++----+-----------+---------------------------------------------+----------+--------------+
+|  1 | Mesa      | Mesa de 4 lugares                           |       10 |            1 |
+|  2 | Celular   | Celular Samsung                             |       50 |         NULL |
+|  3 | Vaso      | Vaso de cristal                             |       10 |         NULL |
+|  8 | Mause'    | Mouse inalambrico'20);DELETE FROM PRODUCTO; |       20 |         NULL |
+|  9 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 10 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 13 | zapatilla | Zapatillas de Futbol                        |       40 |         NULL |
+| 14 | Botellas  | Botellas de vidrio                          |       50 |         NULL |
+| 15 | Botellas  | Botellas de vidrio                          |       25 |         NULL |
+| 16 | platos    | platos de plastico                          |       50 |         NULL |
+| 28 | Teclado   | Teclado inalambrico                         |       10 |         NULL |
++----+-----------+---------------------------------------------+----------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID=5
+    -> WHERE ID = 2;
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`control_de_stock`.`producto`, CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`))
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 5
+    -> WHERE ID = 2;
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`control_de_stock`.`producto`, CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`))
+mysql> SELECT * FROM PRODUCTO;
++----+-----------+---------------------------------------------+----------+--------------+
+| id | nombre    | descripcion                                 | cantidad | categoria_id |
++----+-----------+---------------------------------------------+----------+--------------+
+|  1 | Mesa      | Mesa de 4 lugares                           |       10 |            1 |
+|  2 | Celular   | Celular Samsung                             |       50 |         NULL |
+|  3 | Vaso      | Vaso de cristal                             |       10 |         NULL |
+|  8 | Mause'    | Mouse inalambrico'20);DELETE FROM PRODUCTO; |       20 |         NULL |
+|  9 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 10 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 13 | zapatilla | Zapatillas de Futbol                        |       40 |         NULL |
+| 14 | Botellas  | Botellas de vidrio                          |       50 |         NULL |
+| 15 | Botellas  | Botellas de vidrio                          |       25 |         NULL |
+| 16 | platos    | platos de plastico                          |       50 |         NULL |
+| 28 | Teclado   | Teclado inalambrico                         |       10 |         NULL |
++----+-----------+---------------------------------------------+----------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 5
+    -> WHERE ID = 2;
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`control_de_stock`.`producto`, CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`))
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 2
+    -> WHERE ID = 2;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM Producto;
++----+-----------+---------------------------------------------+----------+--------------+
+| id | nombre    | descripcion                                 | cantidad | categoria_id |
++----+-----------+---------------------------------------------+----------+--------------+
+|  1 | Mesa      | Mesa de 4 lugares                           |       10 |            1 |
+|  2 | Celular   | Celular Samsung                             |       50 |            2 |
+|  3 | Vaso      | Vaso de cristal                             |       10 |         NULL |
+|  8 | Mause'    | Mouse inalambrico'20);DELETE FROM PRODUCTO; |       20 |         NULL |
+|  9 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 10 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 13 | zapatilla | Zapatillas de Futbol                        |       40 |         NULL |
+| 14 | Botellas  | Botellas de vidrio                          |       50 |         NULL |
+| 15 | Botellas  | Botellas de vidrio                          |       25 |         NULL |
+| 16 | platos    | platos de plastico                          |       50 |         NULL |
+| 28 | Teclado   | Teclado inalambrico                         |       10 |         NULL |
++----+-----------+---------------------------------------------+----------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 3
+    -> WHERE ID = 3;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM Producto;
++----+-----------+---------------------------------------------+----------+--------------+
+| id | nombre    | descripcion                                 | cantidad | categoria_id |
++----+-----------+---------------------------------------------+----------+--------------+
+|  1 | Mesa      | Mesa de 4 lugares                           |       10 |            1 |
+|  2 | Celular   | Celular Samsung                             |       50 |            2 |
+|  3 | Vaso      | Vaso de cristal                             |       10 |            3 |
+|  8 | Mause'    | Mouse inalambrico'20);DELETE FROM PRODUCTO; |       20 |         NULL |
+|  9 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 10 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 13 | zapatilla | Zapatillas de Futbol                        |       40 |         NULL |
+| 14 | Botellas  | Botellas de vidrio                          |       50 |         NULL |
+| 15 | Botellas  | Botellas de vidrio                          |       25 |         NULL |
+| 16 | platos    | platos de plastico                          |       50 |         NULL |
+| 28 | Teclado   | Teclado inalambrico                         |       10 |         NULL |
++----+-----------+---------------------------------------------+----------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 2
+    -> WHERE ID = 8;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM Producto;
++----+-----------+---------------------------------------------+----------+--------------+
+| id | nombre    | descripcion                                 | cantidad | categoria_id |
++----+-----------+---------------------------------------------+----------+--------------+
+|  1 | Mesa      | Mesa de 4 lugares                           |       10 |            1 |
+|  2 | Celular   | Celular Samsung                             |       50 |            2 |
+|  3 | Vaso      | Vaso de cristal                             |       10 |            3 |
+|  8 | Mause'    | Mouse inalambrico'20);DELETE FROM PRODUCTO; |       20 |            2 |
+|  9 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 10 | Linternas | Linterna con pilas recargables              |       50 |         NULL |
+| 13 | zapatilla | Zapatillas de Futbol                        |       40 |         NULL |
+| 14 | Botellas  | Botellas de vidrio                          |       50 |         NULL |
+| 15 | Botellas  | Botellas de vidrio                          |       25 |         NULL |
+| 16 | platos    | platos de plastico                          |       50 |         NULL |
+| 28 | Teclado   | Teclado inalambrico                         |       10 |         NULL |
++----+-----------+---------------------------------------------+----------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 2
+    -> WHERE ID = 9;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 2
+    -> WHERE ID = 10;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 4
+    -> WHERE ID = 13;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 3
+    -> WHERE ID = 14;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 3
+    -> WHERE ID = 15;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 3
+    -> WHERE ID =16;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE PRODUCTO
+    -> SET CATEGORIA_ID = 2
+    -> WHERE ID = 28;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM PRODUCTO;
++----+-----------+---------------------------------------------+----------+--------------+
+| id | nombre    | descripcion                                 | cantidad | categoria_id |
++----+-----------+---------------------------------------------+----------+--------------+
+|  1 | Mesa      | Mesa de 4 lugares                           |       10 |            1 |
+|  2 | Celular   | Celular Samsung                             |       50 |            2 |
+|  3 | Vaso      | Vaso de cristal                             |       10 |            3 |
+|  8 | Mause'    | Mouse inalambrico'20);DELETE FROM PRODUCTO; |       20 |            2 |
+|  9 | Linternas | Linterna con pilas recargables              |       50 |            2 |
+| 10 | Linternas | Linterna con pilas recargables              |       50 |            2 |
+| 13 | zapatilla | Zapatillas de Futbol                        |       40 |            4 |
+| 14 | Botellas  | Botellas de vidrio                          |       50 |            3 |
+| 15 | Botellas  | Botellas de vidrio                          |       25 |            3 |
+| 16 | platos    | platos de plastico                          |       50 |            3 |
+| 28 | Teclado   | Teclado inalambrico                         |       10 |            2 |
++----+-----------+---------------------------------------------+----------+--------------+
+11 rows in set (0.00 sec)
+```

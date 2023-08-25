@@ -20,7 +20,8 @@ public class ProductoController {
 	}
 
 
-    public void guardar(Producto producto) {
+    public void guardar(Producto producto, Object object) {
+    	producto.setCategoriaId(object);
     	productoDAO.guardar(producto);
     }
     
